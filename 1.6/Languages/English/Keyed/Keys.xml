@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+	<META_ViewBounties>View bounties</META_ViewBounties>
+	
+	<META_BrowseBounties>Browse bounties offered by {0}</META_BrowseBounties>
+	<META_BrowseBounties_Description>{0} skims through the list of bounties offered by {1}. With {0}'s current negotiation ability, combat skills and past experience, each contract will cost {2} silver to take on.</META_BrowseBounties_Description>
+	
+	<META_Accept>Accept contract</META_Accept>
+	<META_NoBounties>{0} is not currently offering any bounties.</META_NoBounties>
+	
+	<META_CannotAffordBounty>We do not have the {0} silver required to buy this bounty.</META_CannotAffordBounty>
+</LanguageData>

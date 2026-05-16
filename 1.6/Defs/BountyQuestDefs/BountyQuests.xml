@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+	<BountiesMod.BountyDef>
+		<label>CAMP WANTED CLEARED</label>
+		<description>The contractor wants a specific bandit camp cleared.</description>
+		<defName>META_CleanBanditCampBounty</defName>
+		<firesQuest>OpportunitySite_BanditCamp</firesQuest>
+	</BountiesMod.BountyDef>
+</Defs>
