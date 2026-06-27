@@ -14,4 +14,10 @@
 			<li Class="BountiesMod.WorldObjectCompProperties_Bounties"/>
 		</value>
 	</Operation>
+	<Operation Class="PatchOperationAdd">
+		<xpath>Defs/WorldObjectDef[defName="Site"]/comps</xpath>
+		<value>
+			<li Class="BountiesMod.WorldObjectCompProperties_DebtEnforcement"/>
+		</value>
+	</Operation>
 </Patch>

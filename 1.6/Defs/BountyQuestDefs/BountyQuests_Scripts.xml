@@ -1,0 +1,850 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Defs>
+  <QuestScriptDef>
+    <defName>META_HuntingMadAnimals</defName>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>350</rootMinPoints>
+    <autoAccept>true</autoAccept>
+    <questNameRules>
+      <rulesStrings>
+        <li>questName->Hunting: Mad [animalKind_labelPlural]</li>
+      </rulesStrings>
+    </questNameRules>
+    <questDescriptionRules>
+      <rulesStrings>
+        <li>questDescription(Scaria==False,asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, [asker_faction_leaderTitle] of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has contacted us with a contract.\n\nA pack of [animalCount] [animalKind_labelPlural] have entered a localized manhunting state and are attacking anything nearby.\n\nThey are currently terrorizing the region and pose a serious danger to nearby travelers and settlements. &lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants you to travel to their nearby location and exterminate the entire pack before they wander off.</li>
+        <li>questDescription(Scaria==True,asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, [asker_faction_leaderTitle] of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has contacted us with a contract.\n\nA pack of [animalCount] [animalKind_labelPlural] have been driven into a violent manhunting rage and are suffering from advanced scaria infection.\n\nThey are currently ravaging the surrounding region and present an immediate threat to all nearby settlements. &lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants the creatures eliminated before the infection spreads further.</li>
+      </rulesStrings>
+    </questDescriptionRules>
+    <root Class="QuestNode_Sequence">
+      <nodes>
+        <li Class="QuestNode_Set">
+          <name>points</name>
+          <value>$(randInt(600, 1200))</value>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_RandomizePointsChallengeRating</def>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_AdjustPointsForDistantFight</def>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_GetDefaultRewardValueFromPoints</def>
+        </li>
+        <li Class="QuestNode_GetMap" />
+        <li Class="BountiesMod.QuestNode_GetEnemyFactionLeader">
+          <faction>$faction</faction>
+          <storeAs>asker</storeAs>
+        </li>
+
+        <li Class="QuestNode_GetSiteTile">
+          <storeAs>siteTile</storeAs>
+          <preferCloserTiles>true</preferCloserTiles>
+        </li>
+
+        <li Class="QuestNode_RandomNode">
+          <nodes>
+            <li Class="QuestNode_Sequence">
+              <nodes>
+                <li Class="QuestNode_Set">
+                  <name>Scaria</name>
+                  <value>True</value>
+                </li>
+                <li Class="QuestNode_Set">
+                  <name>sitePartTag</name>
+                  <value>META_BountyMadAnimalsScaria</value>
+                </li>
+              </nodes>
+            </li>
+            <li Class="QuestNode_Sequence">
+              <nodes>
+                <li Class="QuestNode_Set">
+                  <name>Scaria</name>
+                  <value>False</value>
+                </li>
+                <li Class="QuestNode_Set">
+                  <name>sitePartTag</name>
+                  <value>META_BountyMadAnimalsNoScaria</value>
+                </li>
+              </nodes>
+            </li>
+          </nodes>
+        </li>
+
+        <li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
+          <storeAs>sitePartDefs</storeAs>
+          <storeFactionAs>siteFaction</storeFactionAs>
+          <sitePartsTags>
+            <li>
+              <tag>$sitePartTag</tag>
+            </li>
+          </sitePartsTags>
+        </li>
+
+        <li Class="QuestNode_GetDefaultSitePartsParams">
+          <tile>$siteTile</tile>
+          <faction>$siteFaction</faction>
+          <sitePartDefs>$sitePartDefs</sitePartDefs>
+          <storeSitePartsParamsAs>sitePartsParams</storeSitePartsParamsAs>
+        </li>
+
+        <li Class="QuestNode_SubScript">
+          <def>Util_GenerateSite</def>
+        </li>
+
+        <li Class="QuestNode_SpawnWorldObjects">
+          <worldObjects>$site</worldObjects>
+        </li>
+
+        <li Class="QuestNode_WorldObjectTimeout">
+          <worldObject>$site</worldObject>
+          <isQuestTimeout>true</isQuestTimeout>
+          <delayTicks>720000</delayTicks>
+          <inSignalDisable>site.MapGenerated</inSignalDisable>
+          <destroyOnCleanup>true</destroyOnCleanup>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+
+        <li Class="QuestNode_Signal">
+          <inSignal>site.Destroyed</inSignal>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+
+        <li Class="QuestNode_Signal">
+          <inSignal>site.AllEnemiesDefeated</inSignal>
+          <node Class="QuestNode_Sequence">
+            <nodes>
+              <li Class="QuestNode_GiveRewards">
+                <parms>
+                  <allowGoodwill>true</allowGoodwill>
+                  <allowRoyalFavor>true</allowRoyalFavor>
+                </parms>
+              </li>
+              <li Class="QuestNode_End">
+                <outcome>Success</outcome>
+                <sendStandardLetter>true</sendStandardLetter>
+              </li>
+            </nodes>
+          </node>
+        </li>
+      </nodes>
+    </root>
+  </QuestScriptDef>
+
+  <QuestScriptDef>
+    <defName>META_HuntingExoticCulling</defName>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>350</rootMinPoints>
+    <autoAccept>true</autoAccept>
+    <questNameRules>
+      <rulesStrings>
+        <li>questName->Hunting: Exotic Culling</li>
+      </rulesStrings>
+    </questNameRules>
+    <questDescriptionRules>
+      <rulesStrings>
+        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, requires our intervention.\n\nA migration event or environmental disruption has introduced a group of [animalCount] [animalKind_labelPlural] into a nearby ecosystem.\n\nDue to their extreme aggression and voracious feeding behavior, the creatures are devastating local wildlife populations and threatening nearby settlements.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; is offering a bounty for their complete extermination before the ecological damage worsens.</li>
+      </rulesStrings>
+    </questDescriptionRules>
+    <root Class="QuestNode_Sequence">
+      <nodes>
+        <li Class="QuestNode_Set">
+          <name>points</name>
+          <value>$(randInt(800, 1500))</value>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_RandomizePointsChallengeRating</def>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_AdjustPointsForDistantFight</def>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_GetDefaultRewardValueFromPoints</def>
+        </li>
+        <li Class="QuestNode_GetMap" />
+        <li Class="BountiesMod.QuestNode_GetEnemyFactionLeader">
+          <faction>$faction</faction>
+          <storeAs>asker</storeAs>
+        </li>
+
+        <li Class="QuestNode_GetSiteTile">
+          <storeAs>siteTile</storeAs>
+          <preferCloserTiles>true</preferCloserTiles>
+        </li>
+
+        <li Class="QuestNode_RandomNode">
+          <nodes>
+            <li Class="QuestNode_Sequence">
+              <selectionWeight>0.4</selectionWeight>
+              <nodes>
+                <li Class="QuestNode_Set">
+                  <name>sitePartsTags</name>
+                  <value>
+                    <li>
+                      <tag>META_BountyExoticAnimals</tag>
+                    </li>
+                    <li>
+                      <tag>WeatherController</tag>
+                    </li>
+                  </value>
+                </li>
+              </nodes>
+            </li>
+            <li Class="QuestNode_Sequence">
+              <selectionWeight>0.6</selectionWeight>
+              <nodes>
+                <li Class="QuestNode_Set">
+                  <name>sitePartsTags</name>
+                  <value>
+                    <li>
+                      <tag>META_BountyExoticAnimals</tag>
+                    </li>
+                  </value>
+                </li>
+              </nodes>
+            </li>
+          </nodes>
+        </li>
+
+        <li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
+          <storeAs>sitePartDefs</storeAs>
+          <storeFactionAs>siteFaction</storeFactionAs>
+          <sitePartsTags>$sitePartsTags</sitePartsTags>
+        </li>
+
+        <li Class="QuestNode_GetDefaultSitePartsParams">
+          <tile>$siteTile</tile>
+          <faction>$siteFaction</faction>
+          <sitePartDefs>$sitePartDefs</sitePartDefs>
+          <storeSitePartsParamsAs>sitePartsParams</storeSitePartsParamsAs>
+        </li>
+
+        <li Class="QuestNode_SubScript">
+          <def>Util_GenerateSite</def>
+        </li>
+
+        <li Class="QuestNode_SpawnWorldObjects">
+          <worldObjects>$site</worldObjects>
+        </li>
+
+        <li Class="QuestNode_WorldObjectTimeout">
+          <worldObject>$site</worldObject>
+          <isQuestTimeout>true</isQuestTimeout>
+          <delayTicks>720000</delayTicks>
+          <inSignalDisable>site.MapGenerated</inSignalDisable>
+          <destroyOnCleanup>true</destroyOnCleanup>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+
+        <li Class="QuestNode_Signal">
+          <inSignal>site.Destroyed</inSignal>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+
+        <li Class="QuestNode_Signal">
+          <inSignal>site.AllEnemiesDefeated</inSignal>
+          <node Class="QuestNode_Sequence">
+            <nodes>
+              <li Class="QuestNode_GiveRewards">
+                <parms>
+                  <allowGoodwill>true</allowGoodwill>
+                  <allowRoyalFavor>true</allowRoyalFavor>
+                </parms>
+              </li>
+              <li Class="QuestNode_End">
+                <outcome>Success</outcome>
+                <sendStandardLetter>true</sendStandardLetter>
+              </li>
+            </nodes>
+          </node>
+        </li>
+      </nodes>
+    </root>
+  </QuestScriptDef>
+
+  <QuestScriptDef>
+    <defName>META_DefeatOutpost</defName>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>350</rootMinPoints>
+    <autoAccept>true</autoAccept>
+    <questNameRules>
+      <rulesStrings>
+        <li>questName->Defeat the Outpost</li>
+      </rulesStrings>
+    </questNameRules>
+    <questDescriptionRules>
+      <rulesStrings>
+        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, [asker_faction_leaderTitle] of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has contacted us with a contract.\n\nA nearby outpost controlled by &lt;color=#FF3333FF&gt;[enemyFaction_name]&lt;/color&gt; has been harassing trade routes and attacking local caravans.\n\nThe outpost has been located at a nearby coordinate. &lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants the site completely destroyed.\n\nTo fulfill the contract, all hostile defenders and active turrets must be eliminated.</li>
+      </rulesStrings>
+    </questDescriptionRules>
+    <root Class="QuestNode_Sequence">
+      <nodes>
+        <li Class="QuestNode_Set">
+          <name>points</name>
+          <value>$(randInt(600, 1200))</value>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_RandomizePointsChallengeRating</def>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_AdjustPointsForDistantFight</def>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_GetDefaultRewardValueFromPoints</def>
+        </li>
+        <li Class="QuestNode_GetMap" />
+        <li Class="BountiesMod.QuestNode_GetEnemyFactionLeader">
+          <faction>$faction</faction>
+          <storeAs>asker</storeAs>
+        </li>
+
+        <li Class="QuestNode_GetFaction">
+          <storeAs>enemyFaction</storeAs>
+          <allowEnemy>true</allowEnemy>
+          <mustBePermanentEnemy>true</mustBePermanentEnemy>
+        </li>
+
+        <li Class="QuestNode_GetSiteTile">
+          <storeAs>siteTile</storeAs>
+          <preferCloserTiles>true</preferCloserTiles>
+        </li>
+
+        <li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
+          <storeAs>sitePartDefs</storeAs>
+          <storeFactionAs>siteFaction</storeFactionAs>
+          <sitePartsTags>
+            <li>
+              <tag>BanditCamp</tag>
+            </li>
+          </sitePartsTags>
+        </li>
+
+        <li Class="QuestNode_GetDefaultSitePartsParams">
+          <tile>$siteTile</tile>
+          <faction>$siteFaction</faction>
+          <sitePartDefs>$sitePartDefs</sitePartDefs>
+          <storeSitePartsParamsAs>sitePartsParams</storeSitePartsParamsAs>
+        </li>
+
+        <li Class="QuestNode_SubScript">
+          <def>Util_GenerateSite</def>
+        </li>
+
+        <li Class="QuestNode_SpawnWorldObjects">
+          <worldObjects>$site</worldObjects>
+        </li>
+
+        <li Class="QuestNode_WorldObjectTimeout">
+          <worldObject>$site</worldObject>
+          <isQuestTimeout>true</isQuestTimeout>
+          <delayTicks>720000</delayTicks>
+          <inSignalDisable>site.MapGenerated</inSignalDisable>
+          <destroyOnCleanup>true</destroyOnCleanup>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+
+        <li Class="QuestNode_Signal">
+          <inSignal>site.Destroyed</inSignal>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+
+        <li Class="QuestNode_Signal">
+          <inSignal>site.AllEnemiesDefeated</inSignal>
+          <node Class="QuestNode_Sequence">
+            <nodes>
+              <li Class="QuestNode_GiveRewards">
+                <parms>
+                  <allowGoodwill>true</allowGoodwill>
+                  <allowRoyalFavor>true</allowRoyalFavor>
+                </parms>
+              </li>
+              <li Class="QuestNode_End">
+                <outcome>Success</outcome>
+                <sendStandardLetter>true</sendStandardLetter>
+              </li>
+            </nodes>
+          </node>
+        </li>
+      </nodes>
+    </root>
+  </QuestScriptDef>
+
+  <QuestScriptDef>
+    <defName>META_ContractLeader</defName>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>350</rootMinPoints>
+    <autoAccept>true</autoAccept>
+    <questNameRules>
+      <rulesStrings>
+        <li>questName->Contract: [leader_nameFull]</li>
+      </rulesStrings>
+    </questNameRules>
+    <questDescriptionRules>
+      <rulesStrings>
+        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a high-priority contract against &lt;color=#FF3333FF&gt;[enemyFaction_name]&lt;/color&gt;.\n\nIntelligence reports confirm that [leader_nameFull], leader of [enemyFaction_name], is currently visiting a nearby settelment to inspect local defenses.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants you to infiltrate the site and either capture or eliminate [leader_nameDef].\n\nHeavy resistance is expected.</li>
+      </rulesStrings>
+    </questDescriptionRules>
+    <root Class="QuestNode_Sequence">
+      <nodes>
+        <li Class="QuestNode_Set">
+          <name>points</name>
+          <value>$(randInt(800, 1500))</value>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_RandomizePointsChallengeRating</def>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_GetDefaultRewardValueFromPoints</def>
+        </li>
+        <li Class="QuestNode_GetMap" />
+        <li Class="BountiesMod.QuestNode_GetEnemyFactionLeader">
+          <faction>$faction</faction>
+          <storeAs>asker</storeAs>
+        </li>
+        <li Class="QuestNode_GetFaction">
+          <storeAs>enemyFaction</storeAs>
+          <allowEnemy>true</allowEnemy>
+          <mustBePermanentEnemy>true</mustBePermanentEnemy>
+        </li>
+        <li Class="BountiesMod.QuestNode_GetEnemyFactionLeader">
+          <faction>$enemyFaction</faction>
+          <storeAs>leader</storeAs>
+        </li>
+        <li Class="QuestNode_GetSiteTile">
+          <storeAs>siteTile</storeAs>
+          <preferCloserTiles>true</preferCloserTiles>
+        </li>
+        <li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
+          <storeAs>sitePartDefs</storeAs>
+          <storeFactionAs>siteFaction</storeFactionAs>
+          <sitePartsTags>
+            <li>
+              <tag>META_BountyPawnCamp</tag>
+            </li>
+          </sitePartsTags>
+        </li>
+        <li Class="QuestNode_GetDefaultSitePartsParams">
+          <tile>$siteTile</tile>
+          <faction>$siteFaction</faction>
+          <sitePartDefs>$sitePartDefs</sitePartDefs>
+          <storeSitePartsParamsAs>sitePartsParams</storeSitePartsParamsAs>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_GenerateSite</def>
+        </li>
+        <li Class="QuestNode_SpawnWorldObjects">
+          <worldObjects>$site</worldObjects>
+        </li>
+        <li Class="QuestNode_WorldObjectTimeout">
+          <worldObject>$site</worldObject>
+          <isQuestTimeout>true</isQuestTimeout>
+          <delayTicks>720000</delayTicks>
+          <inSignalDisable>site.MapGenerated</inSignalDisable>
+          <destroyOnCleanup>true</destroyOnCleanup>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+        <li Class="BountiesMod.QuestNode_TargetCapturedOrKilled">
+          <target>$leader</target>
+          <inSignalEnable>site.MapGenerated</inSignalEnable>
+          <outSignal>LeaderEliminated</outSignal>
+        </li>
+        <li Class="QuestNode_Signal">
+          <inSignal>site.Destroyed</inSignal>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+        <li Class="QuestNode_AnySignal">
+          <inSignals>
+            <li>LeaderEliminated</li>
+          </inSignals>
+          <node Class="QuestNode_Sequence">
+            <nodes>
+              <li Class="QuestNode_GiveRewards">
+                <parms>
+                  <allowGoodwill>true</allowGoodwill>
+                  <allowRoyalFavor>true</allowRoyalFavor>
+                </parms>
+              </li>
+              <li Class="QuestNode_End">
+                <outcome>Success</outcome>
+                <sendStandardLetter>true</sendStandardLetter>
+              </li>
+            </nodes>
+          </node>
+        </li>
+      </nodes>
+    </root>
+  </QuestScriptDef>
+
+  <QuestScriptDef>
+    <defName>META_DebtEnforcement</defName>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>350</rootMinPoints>
+    <autoAccept>true</autoAccept>
+    <questNameRules>
+      <rulesStrings>
+        <li>questName->Debt Enforcement: [enemyFaction_name]</li>
+      </rulesStrings>
+    </questNameRules>
+    <questDescriptionRules>
+      <rulesStrings>
+        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, is demanding repayment from &lt;color=#FF3333FF&gt;[enemyFaction_name]&lt;/color&gt;.\n\nThe faction owes a substantial financial debt and has repeatedly refused repayment demands.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants you to travel to their nearby settlement and enforce collection by any means necessary.\n\nSkilled negotiators may resolve the matter peacefully, but forceful asset seizure and destruction are fully authorized if diplomacy fails.</li>
+      </rulesStrings>
+    </questDescriptionRules>
+    <root Class="QuestNode_Sequence">
+      <nodes>
+        <li Class="QuestNode_Set">
+          <name>points</name>
+          <value>$(randInt(600, 1200))</value>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_RandomizePointsChallengeRating</def>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_GetDefaultRewardValueFromPoints</def>
+        </li>
+        <li Class="QuestNode_GetMap" />
+        <li Class="BountiesMod.QuestNode_GetEnemyFactionLeader">
+          <faction>$faction</faction>
+          <storeAs>asker</storeAs>
+        </li>
+        <li Class="QuestNode_GetFaction">
+          <storeAs>enemyFaction</storeAs>
+          <allowEnemy>true</allowEnemy>
+        </li>
+        <li Class="QuestNode_GetSiteTile">
+          <storeAs>siteTile</storeAs>
+          <preferCloserTiles>true</preferCloserTiles>
+        </li>
+        <li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
+          <storeAs>sitePartDefs</storeAs>
+          <storeFactionAs>siteFaction</storeFactionAs>
+          <sitePartsTags>
+            <li>
+              <tag>META_DebtEnforcementCamp</tag>
+            </li>
+          </sitePartsTags>
+        </li>
+        <li Class="QuestNode_GetDefaultSitePartsParams">
+          <tile>$siteTile</tile>
+          <faction>$siteFaction</faction>
+          <sitePartDefs>$sitePartDefs</sitePartDefs>
+          <storeSitePartsParamsAs>sitePartsParams</storeSitePartsParamsAs>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_GenerateSite</def>
+        </li>
+        <li Class="QuestNode_SpawnWorldObjects">
+          <worldObjects>$site</worldObjects>
+        </li>
+        <li Class="QuestNode_WorldObjectTimeout">
+          <worldObject>$site</worldObject>
+          <isQuestTimeout>true</isQuestTimeout>
+          <delayTicks>720000</delayTicks>
+          <inSignalDisable>site.MapGenerated</inSignalDisable>
+          <destroyOnCleanup>true</destroyOnCleanup>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+        <li Class="QuestNode_Signal">
+          <inSignal>site.Destroyed</inSignal>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+        <li Class="QuestNode_AnySignal">
+          <inSignals>
+            <li>site.AllEnemiesDefeated</li>
+            <li>site.DiplomacySuccess</li>
+          </inSignals>
+          <node Class="QuestNode_Sequence">
+            <nodes>
+              <li Class="QuestNode_GiveRewards">
+                <parms>
+                  <allowGoodwill>true</allowGoodwill>
+                  <allowRoyalFavor>true</allowRoyalFavor>
+                </parms>
+              </li>
+              <li Class="QuestNode_End">
+                <outcome>Success</outcome>
+                <sendStandardLetter>true</sendStandardLetter>
+              </li>
+            </nodes>
+          </node>
+        </li>
+      </nodes>
+    </root>
+  </QuestScriptDef>
+
+  <QuestScriptDef>
+    <defName>META_Retrieval</defName>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>350</rootMinPoints>
+    <autoAccept>true</autoAccept>
+    <questNameRules>
+      <rulesStrings>
+        <li>questName->Retrieval: [ItemName]</li>
+      </rulesStrings>
+    </questNameRules>
+    <questDescriptionRules>
+      <rulesStrings>
+        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, [asker_faction_leaderTitle] of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has acquired intelligence regarding the location of a valuable asset.\n\nThe target object is identified as &lt;color=#E6E64CFF&gt;[ItemName]&lt;/color&gt;.\n\nThe item is believed to be located somewhere nearby, although hostile resistance or environmental dangers may be present.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants the item retrieved and delivered intact.</li>
+      </rulesStrings>
+    </questDescriptionRules>
+    <root Class="QuestNode_Sequence">
+      <nodes>
+        <li Class="QuestNode_Set">
+          <name>points</name>
+          <value>$(randInt(600, 1200))</value>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_RandomizePointsChallengeRating</def>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_GetDefaultRewardValueFromPoints</def>
+        </li>
+        <li Class="QuestNode_GetMap" />
+        <li Class="BountiesMod.QuestNode_GetEnemyFactionLeader">
+          <faction>$faction</faction>
+          <storeAs>asker</storeAs>
+        </li>
+        <li Class="QuestNode_GetFactionOf">
+          <thing>$asker</thing>
+          <storeAs>askerFaction</storeAs>
+        </li>
+        <li Class="BountiesMod.QuestNode_GenerateRetrievalItem">
+          <storeAs>item</storeAs>
+        </li>
+        <li Class="QuestNode_GetSiteTile">
+          <storeAs>siteTile</storeAs>
+          <preferCloserTiles>true</preferCloserTiles>
+        </li>
+        <li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
+          <storeAs>sitePartDefs</storeAs>
+          <storeFactionAs>siteFaction</storeFactionAs>
+          <sitePartsTags>
+            <li>
+              <tag>META_BountyItemStash</tag>
+            </li>
+          </sitePartsTags>
+        </li>
+        <li Class="QuestNode_GetDefaultSitePartsParams">
+          <tile>$siteTile</tile>
+          <faction>$siteFaction</faction>
+          <sitePartDefs>$sitePartDefs</sitePartDefs>
+          <storeSitePartsParamsAs>sitePartsParams</storeSitePartsParamsAs>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_GenerateSite</def>
+        </li>
+        <li Class="QuestNode_SpawnWorldObjects">
+          <worldObjects>$site</worldObjects>
+        </li>
+        <li Class="BountiesMod.QuestNode_SetupBountyDelivery">
+          <targetItem>$item</targetItem>
+          <askerFaction>$askerFaction</askerFaction>
+        </li>
+        <li Class="QuestNode_WorldObjectTimeout">
+          <worldObject>$site</worldObject>
+          <isQuestTimeout>true</isQuestTimeout>
+          <delayTicks>720000</delayTicks>
+          <inSignalDisable>site.MapGenerated</inSignalDisable>
+          <destroyOnCleanup>true</destroyOnCleanup>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+        <li Class="QuestNode_Signal">
+          <inSignal>item.Destroyed</inSignal>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+        <li Class="QuestNode_AnySignal">
+          <inSignals>
+            <li>$outDelivered</li>
+          </inSignals>
+          <node Class="QuestNode_Sequence">
+            <nodes>
+              <li Class="QuestNode_GiveRewards">
+                <parms>
+                  <allowGoodwill>true</allowGoodwill>
+                  <allowRoyalFavor>true</allowRoyalFavor>
+                </parms>
+              </li>
+              <li Class="QuestNode_End">
+                <outcome>Success</outcome>
+                <sendStandardLetter>true</sendStandardLetter>
+              </li>
+            </nodes>
+          </node>
+        </li>
+      </nodes>
+    </root>
+  </QuestScriptDef>
+
+  <QuestScriptDef>
+    <defName>META_BountyTarget</defName>
+    <rootSelectionWeight>0</rootSelectionWeight>
+    <rootMinPoints>350</rootMinPoints>
+    <autoAccept>true</autoAccept>
+    <questNameRules>
+      <rulesStrings>
+        <li>questName(CaptureAlive==True)->Bounty: [target_nameDef] the Fugitive</li>
+        <li>questName(DeadOrAlive==True)->Bounty: [target_nameDef]</li>
+        <li>questName(DeadPreferred==True)->Execution Contract: [target_nameDef]</li>
+        <li>questName(AlivePreferred==True)->Bounty: [target_nameDef]</li>
+      </rulesStrings>
+    </questNameRules>
+    <questDescriptionRules>
+      <rulesStrings>
+        <li>questDescription(asker_factionLeader==True,CaptureAlive==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a live-capture warrant for [target_nameFull].\n\nIntelligence reports place [target_nameDef] at a nearby hostile site protected by armed guards.\n\nThe client requires the target returned alive to face interrogation and sentencing. Lethal force against defenders is fully authorized, but if [target_nameDef] dies, the contract will immediately fail.</li>
+        <li>questDescription(asker_factionLeader==True,DeadOrAlive==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has placed a bounty on [target_nameFull].\n\n[target_nameDef] has been located at a nearby encampment under armed protection.\n\nThe client authorizes either live capture or lethal termination. Full payment will be provided whether the target is returned breathing or dead.\n\n&lt;color=#D09B61FF&gt;Warning:&lt;/color&gt; If the target is killed, the corpse must remain intact for positive identification.</li>
+        <li>questDescription(asker_factionLeader==True,AlivePreferred==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has authorized a bounty contract for [target_nameFull].\n\n[target_nameDef] is currently hiding at a nearby hostile location guarded by loyal defenders.\n\nThe client strongly prefers the target captured alive for questioning and public sentencing. However, lethal force is authorized if capture becomes impossible.\n\nReturning the corpse instead of a living prisoner will reduce the final reward.</li>
+        <li>questDescription(asker_factionLeader==True,DeadPreferred==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a termination contract for [target_nameFull].\n\n[target_nameDef] has become a major threat to regional stability and negotiations are no longer considered viable.\n\nThe target has been tracked to a nearby fortified position. The client requires definitive proof of death and authorizes unrestricted lethal force.</li>
+      </rulesStrings>
+    </questDescriptionRules>
+    <root Class="QuestNode_Sequence">
+      <nodes>
+        <li Class="QuestNode_Set">
+          <name>points</name>
+          <value>$(randInt(600, 1200))</value>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_RandomizePointsChallengeRating</def>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_GetDefaultRewardValueFromPoints</def>
+        </li>
+        <li Class="QuestNode_GetMap" />
+        <li Class="BountiesMod.QuestNode_GetEnemyFactionLeader">
+          <faction>$faction</faction>
+          <storeAs>asker</storeAs>
+        </li>
+        <li Class="QuestNode_GetFactionOf">
+          <thing>$asker</thing>
+          <storeAs>askerFaction</storeAs>
+        </li>
+        <li Class="QuestNode_GetFaction">
+          <storeAs>enemyFaction</storeAs>
+          <allowEnemy>true</allowEnemy>
+        </li>
+        <li Class="BountiesMod.QuestNode_GenerateBountyTarget">
+          <faction>$enemyFaction</faction>
+          <storeAs>target</storeAs>
+        </li>
+        <li Class="QuestNode_GetSiteTile">
+          <storeAs>siteTile</storeAs>
+          <preferCloserTiles>true</preferCloserTiles>
+        </li>
+        <li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
+          <storeAs>sitePartDefs</storeAs>
+          <storeFactionAs>siteFaction</storeFactionAs>
+          <sitePartsTags>
+            <li>
+              <tag>META_BountyPawnCamp</tag>
+            </li>
+          </sitePartsTags>
+        </li>
+        <li Class="QuestNode_GetDefaultSitePartsParams">
+          <tile>$siteTile</tile>
+          <faction>$siteFaction</faction>
+          <sitePartDefs>$sitePartDefs</sitePartDefs>
+          <storeSitePartsParamsAs>sitePartsParams</storeSitePartsParamsAs>
+        </li>
+        <li Class="QuestNode_SubScript">
+          <def>Util_GenerateSite</def>
+        </li>
+        <li Class="QuestNode_SpawnWorldObjects">
+          <worldObjects>$site</worldObjects>
+        </li>
+        <li Class="BountiesMod.QuestNode_SetupBountyContract">
+          <target>$target</target>
+          <askerFaction>$askerFaction</askerFaction>
+        </li>
+        <li Class="QuestNode_WorldObjectTimeout">
+          <worldObject>$site</worldObject>
+          <isQuestTimeout>true</isQuestTimeout>
+          <delayTicks>720000</delayTicks>
+          <inSignalDisable>site.MapGenerated</inSignalDisable>
+          <destroyOnCleanup>true</destroyOnCleanup>
+          <node Class="QuestNode_End">
+            <outcome>Fail</outcome>
+            <sendStandardLetter>true</sendStandardLetter>
+          </node>
+        </li>
+        <li Class="QuestNode_Signal">
+          <inSignal>$outDeliveredAlive</inSignal>
+          <node Class="QuestNode_Sequence">
+            <nodes>
+              <li Class="QuestNode_Greater">
+                <value1>$rewardValueAlive</value1>
+                <value2>0</value2>
+                <node Class="QuestNode_GiveRewards">
+                  <parms>
+                    <rewardValue>$rewardValueAlive</rewardValue>
+                    <allowGoodwill>true</allowGoodwill>
+                    <allowRoyalFavor>true</allowRoyalFavor>
+                  </parms>
+                </node>
+              </li>
+              <li Class="QuestNode_End">
+                <outcome>Success</outcome>
+                <sendStandardLetter>true</sendStandardLetter>
+              </li>
+            </nodes>
+          </node>
+        </li>
+        <li Class="QuestNode_Signal">
+          <inSignal>$outDeliveredDead</inSignal>
+          <node Class="QuestNode_Sequence">
+            <nodes>
+              <li Class="QuestNode_Greater">
+                <value1>$rewardValueDead</value1>
+                <value2>0</value2>
+                <node Class="QuestNode_GiveRewards">
+                  <parms>
+                    <rewardValue>$rewardValueDead</rewardValue>
+                    <allowGoodwill>true</allowGoodwill>
+                  </parms>
+                </node>
+              </li>
+              <li Class="QuestNode_End">
+                <outcome>Success</outcome>
+                <sendStandardLetter>true</sendStandardLetter>
+              </li>
+            </nodes>
+          </node>
+        </li>
+      </nodes>
+    </root>
+  </QuestScriptDef>
+</Defs>

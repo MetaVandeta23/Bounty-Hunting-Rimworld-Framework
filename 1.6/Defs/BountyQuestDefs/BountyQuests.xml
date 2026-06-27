@@ -1,9 +1,58 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <Defs>
 	<BountiesMod.BountyDef>
 		<label>CAMP WANTED CLEARED</label>
 		<description>The contractor wants a specific bandit camp cleared.</description>
 		<defName>META_CleanBanditCampBounty</defName>
 		<firesQuest>OpportunitySite_BanditCamp</firesQuest>
+	</BountiesMod.BountyDef>
+
+	<BountiesMod.BountyDef>
+		<label>HUNTING: MAD ANIMALS</label>
+		<description>The contractor wants a pack of mad animals eliminated.</description>
+		<defName>META_MadAnimalsBounty</defName>
+		<firesQuest>META_HuntingMadAnimals</firesQuest>
+	</BountiesMod.BountyDef>
+
+	<BountiesMod.BountyDef>
+		<label>HUNTING: EXOTIC CULLING</label>
+		<description>The contractor wants exotic creatures culled to prevent ecological damage.</description>
+		<defName>META_ExoticCullingBounty</defName>
+		<firesQuest>META_HuntingExoticCulling</firesQuest>
+	</BountiesMod.BountyDef>
+
+	<BountiesMod.BountyDef>
+		<label>OUTPOST WANTED DESTROYED</label>
+		<description>The contractor wants a hostile outpost completely destroyed.</description>
+		<defName>META_DestroyOutpostBounty</defName>
+		<firesQuest>META_DefeatOutpost</firesQuest>
+	</BountiesMod.BountyDef>
+
+	<BountiesMod.BountyDef>
+		<label>LEADER CONTRACT</label>
+		<description>The contractor wants a specific faction leader captured or eliminated.</description>
+		<defName>META_ContractLeaderBounty</defName>
+		<firesQuest>META_ContractLeader</firesQuest>
+	</BountiesMod.BountyDef>
+
+	<BountiesMod.BountyDef>
+		<label>DEBT ENFORCEMENT</label>
+		<description>The contractor wants a financial debt forcefully collected.</description>
+		<defName>META_DebtEnforcementBounty</defName>
+		<firesQuest>META_DebtEnforcement</firesQuest>
+	</BountiesMod.BountyDef>
+
+	<BountiesMod.BountyDef>
+		<label>RETRIEVAL CONTRACT</label>
+		<description>The contractor wants a specific high-value item retrieved from a nearby stash.</description>
+		<defName>META_RetrievalBounty</defName>
+		<firesQuest>META_Retrieval</firesQuest>
+	</BountiesMod.BountyDef>
+
+	<BountiesMod.BountyDef>
+		<label>WANTED BOUNTY</label>
+		<description>The contractor wants a specific pawn returned to them, either dead or alive.</description>
+		<defName>META_BountyTargetBounty</defName>
+		<firesQuest>META_BountyTarget</firesQuest>
 	</BountiesMod.BountyDef>
 </Defs>

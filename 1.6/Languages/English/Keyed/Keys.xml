@@ -9,4 +9,15 @@
 	<META_NoBounties>{0} is not currently offering any bounties.</META_NoBounties>
 	
 	<META_CannotAffordBounty>We do not have the {0} silver required to buy this bounty.</META_CannotAffordBounty>
+
+	<META_NegotiateDebt>Resolve debt (diplomacy)</META_NegotiateDebt>
+	<META_NegotiateSuccess>Debt negotiated</META_NegotiateSuccess>
+	<META_NegotiateSuccessDesc>The debt was successfully negotiated and repaid!</META_NegotiateSuccessDesc>
+	<META_NegotiateFailure>Negotiations failed</META_NegotiateFailure>
+	<META_NegotiateFailureDesc>Negotiations broke down. The faction has turned hostile!</META_NegotiateFailureDesc>
+	<META_AssaultDebt>Resolve debt (assault)</META_AssaultDebt>
+	<META_DeliverBounty>Deliver {0}</META_DeliverBounty>
+
+	<META_BountyTargetKilledLetter>Quest failed: Bounty Contract</META_BountyTargetKilledLetter>
+	<META_BountyTargetKilledLetterText>{0} is no longer recoverable. The bounty contract has been terminated.</META_BountyTargetKilledLetterText>
 </LanguageData>
