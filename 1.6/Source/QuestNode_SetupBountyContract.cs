@@ -1,4 +1,5 @@
 using RimWorld;
+using RimWorld.Planet;
 using RimWorld.QuestGen;
 using Verse;
 
@@ -8,11 +9,19 @@ namespace BountiesMod
     {
         public SlateRef<Pawn> target;
         public SlateRef<Faction> askerFaction;
+        public SlateRef<string> forceContractType;
+        public SlateRef<MapParent> site;
 
         public override void RunInt()
         {
             var slate = QuestGen.slate;
-            var type = Rand.RangeInclusive(0, 3);
+            var forceTypeStr = forceContractType.GetValue(slate);
+            int type = Rand.RangeInclusive(0, 3);
+            if (!string.IsNullOrEmpty(forceTypeStr) && int.TryParse(forceTypeStr, out int parsed))
+            {
+                type = parsed;
+            }
+
             slate.Set("CaptureAlive", type == 0);
             slate.Set("DeadOrAlive", type == 1);
             slate.Set("AlivePreferred", type == 2);
@@ -36,6 +45,7 @@ namespace BountiesMod
             deliveryPart.inSignalEnable = QuestGen.slate.Get<string>("inSignal");
             deliveryPart.askerFaction = askerFaction.GetValue(slate);
             deliveryPart.targetPawn = target.GetValue(slate);
+            deliveryPart.targetSite = site.GetValue(slate);
             deliveryPart.captureAlive = type == 0;
             deliveryPart.deadOrAlive = type == 1;
             deliveryPart.alivePreferred = type == 2;

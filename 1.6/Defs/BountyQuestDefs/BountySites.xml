@@ -68,7 +68,9 @@
     <siteTexture>World/WorldObjects/Sites/GenericSite</siteTexture>
     <expandingIconTexture>World/WorldObjects/Expanding/Sites/ItemStash</expandingIconTexture>
     <wantsThreatPoints>true</wantsThreatPoints>
-    <tags><li>META_BountyItemStash</li></tags>
+    <tags>
+      <li>META_BountyItemStash</li>
+    </tags>
   </SitePartDef>
 
   <GenStepDef>
@@ -81,32 +83,59 @@
     </genStep>
   </GenStepDef>
 
+  <SitePartDef>
+    <defName>META_BountyLeaderBase</defName>
+    <label>fortified settlement</label>
+    <description>A fortified settlement holding a faction leader.</description>
+    <applyFactionColorToSiteTexture>True</applyFactionColorToSiteTexture>
+    <showFactionInInspectString>True</showFactionInInspectString>
+    <siteTexture>World/WorldObjects/Sites/GenericSite</siteTexture>
+    <expandingIconTexture>World/WorldObjects/Expanding/Town</expandingIconTexture>
+    <wantsThreatPoints>true</wantsThreatPoints>
+    <tags>
+      <li>META_BountyLeaderBase</li>
+    </tags>
+  </SitePartDef>
+
+  <GenStepDef>
+    <defName>META_BountyLeaderBase</defName>
+    <linkWithSite>META_BountyLeaderBase</linkWithSite>
+    <order>400</order>
+    <genStep Class="BountiesMod.GenStep_BountyLeaderBase">
+      <count>1</count>
+      <nearMapCenter>true</nearMapCenter>
+    </genStep>
+  </GenStepDef>
+
   <SitePartDef ParentName="Outpost">
     <defName>META_BountyPawnCamp</defName>
     <label>fortified outpost</label>
     <description>A fortified outpost holding a high-value target.</description>
-    <workerClass>BountiesMod.SitePartWorker_BountyPawn</workerClass>
-    <tags Inherit="False"><li>META_BountyPawnCamp</li></tags>
+    <tags Inherit="False">
+      <li>META_BountyPawnCamp</li>
+    </tags>
   </SitePartDef>
 
   <GenStepDef>
     <defName>META_BountyPawnCamp</defName>
     <linkWithSite>META_BountyPawnCamp</linkWithSite>
     <order>450</order>
-    <genStep Class="BountiesMod.GenStep_BountyCamp"/>
+    <genStep Class="BountiesMod.GenStep_BountyCamp" />
   </GenStepDef>
 
   <SitePartDef ParentName="Outpost">
     <defName>META_DebtEnforcementCamp</defName>
     <label>debtor settlement</label>
     <description>A settlement owing a substantial debt.</description>
-    <tags Inherit="False"><li>META_DebtEnforcementCamp</li></tags>
+    <tags Inherit="False">
+      <li>META_DebtEnforcementCamp</li>
+    </tags>
   </SitePartDef>
 
   <GenStepDef>
     <defName>META_DebtEnforcementCamp</defName>
     <linkWithSite>META_DebtEnforcementCamp</linkWithSite>
     <order>450</order>
-    <genStep Class="GenStep_Outpost"/>
+    <genStep Class="GenStep_Outpost" />
   </GenStepDef>
 </Defs>

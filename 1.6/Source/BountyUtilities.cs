@@ -16,5 +16,10 @@ namespace BountiesMod
 
             return price;
         }
+
+        public static bool OffersBounties(Faction faction)
+        {
+            return faction != null && !faction.IsPlayer && !faction.HostileTo(Faction.OfPlayer) && !faction.Hidden && faction.def.humanlikeFaction;
+        }
     }
 }

@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Patch>
-	<Operation Class="PatchOperationAddModExtension">
-		<xpath>Defs/FactionDef[defName="OutlanderCivil"]</xpath>
-		<value>
-			<li Class="BountiesMod.BountiesModExtension">
-				<offersBounties>true</offersBounties>
-			</li>
-		</value>
-	</Operation>
 	<Operation Class="PatchOperationAdd">
 		<xpath>Defs/WorldObjectDef[defName="Settlement"]/comps</xpath>
 		<value>

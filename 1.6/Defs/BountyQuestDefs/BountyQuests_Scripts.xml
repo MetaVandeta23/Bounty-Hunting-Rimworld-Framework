@@ -286,7 +286,7 @@
     </questNameRules>
     <questDescriptionRules>
       <rulesStrings>
-        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, [asker_faction_leaderTitle] of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has contacted us with a contract.\n\nA nearby outpost controlled by &lt;color=#FF3333FF&gt;[enemyFaction_name]&lt;/color&gt; has been harassing trade routes and attacking local caravans.\n\nThe outpost has been located at a nearby coordinate. &lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants the site completely destroyed.\n\nTo fulfill the contract, all hostile defenders and active turrets must be eliminated.</li>
+        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, [asker_faction_leaderTitle] of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has contacted us with a contract.\n\nA nearby outpost controlled by &lt;color=#FF3333FF&gt;[siteFaction_name]&lt;/color&gt; has been harassing trade routes and attacking local caravans.\n\nThe outpost has been located at a nearby coordinate. &lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants the site completely destroyed.\n\nTo fulfill the contract, all hostile defenders and active turrets must be eliminated.</li>
       </rulesStrings>
     </questDescriptionRules>
     <root Class="QuestNode_Sequence">
@@ -308,12 +308,6 @@
         <li Class="BountiesMod.QuestNode_GetEnemyFactionLeader">
           <faction>$faction</faction>
           <storeAs>asker</storeAs>
-        </li>
-
-        <li Class="QuestNode_GetFaction">
-          <storeAs>enemyFaction</storeAs>
-          <allowEnemy>true</allowEnemy>
-          <mustBePermanentEnemy>true</mustBePermanentEnemy>
         </li>
 
         <li Class="QuestNode_GetSiteTile">
@@ -399,7 +393,7 @@
     </questNameRules>
     <questDescriptionRules>
       <rulesStrings>
-        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a high-priority contract against &lt;color=#FF3333FF&gt;[enemyFaction_name]&lt;/color&gt;.\n\nIntelligence reports confirm that [leader_nameFull], leader of [enemyFaction_name], is currently visiting a nearby settelment to inspect local defenses.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants you to infiltrate the site and either capture or eliminate [leader_nameDef].\n\nHeavy resistance is expected.</li>
+        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a high-priority contract against &lt;color=#FF3333FF&gt;[siteFaction_name]&lt;/color&gt;.\n\nIntelligence reports confirm that [leader_nameFull], leader of [siteFaction_name], is currently visiting a nearby settlement to inspect local defenses.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants you to infiltrate the site and either capture or eliminate [leader_nameDef]. The target or their corpse must be returned to any of our settlements to collect the reward.\n\nHeavy resistance is expected.</li>
       </rulesStrings>
     </questDescriptionRules>
     <root Class="QuestNode_Sequence">
@@ -419,13 +413,17 @@
           <faction>$faction</faction>
           <storeAs>asker</storeAs>
         </li>
+        <li Class="QuestNode_GetFactionOf">
+          <thing>$asker</thing>
+          <storeAs>askerFaction</storeAs>
+        </li>
         <li Class="QuestNode_GetFaction">
-          <storeAs>enemyFaction</storeAs>
+          <storeAs>siteFaction</storeAs>
           <allowEnemy>true</allowEnemy>
           <mustBePermanentEnemy>true</mustBePermanentEnemy>
         </li>
         <li Class="BountiesMod.QuestNode_GetEnemyFactionLeader">
-          <faction>$enemyFaction</faction>
+          <faction>$siteFaction</faction>
           <storeAs>leader</storeAs>
         </li>
         <li Class="QuestNode_GetSiteTile">
@@ -434,10 +432,9 @@
         </li>
         <li Class="QuestNode_GetSitePartDefsByTagsAndFaction">
           <storeAs>sitePartDefs</storeAs>
-          <storeFactionAs>siteFaction</storeFactionAs>
           <sitePartsTags>
             <li>
-              <tag>META_BountyPawnCamp</tag>
+              <tag>META_BountyLeaderBase</tag>
             </li>
           </sitePartsTags>
         </li>
@@ -453,6 +450,12 @@
         <li Class="QuestNode_SpawnWorldObjects">
           <worldObjects>$site</worldObjects>
         </li>
+        <li Class="BountiesMod.QuestNode_SetupBountyContract">
+          <target>$leader</target>
+          <askerFaction>$askerFaction</askerFaction>
+          <site>$site</site>
+          <forceContractType>1</forceContractType>
+        </li>
         <li Class="QuestNode_WorldObjectTimeout">
           <worldObject>$site</worldObject>
           <isQuestTimeout>true</isQuestTimeout>
@@ -464,29 +467,41 @@
             <sendStandardLetter>true</sendStandardLetter>
           </node>
         </li>
-        <li Class="BountiesMod.QuestNode_TargetCapturedOrKilled">
-          <target>$leader</target>
-          <inSignalEnable>site.MapGenerated</inSignalEnable>
-          <outSignal>LeaderEliminated</outSignal>
-        </li>
         <li Class="QuestNode_Signal">
-          <inSignal>site.Destroyed</inSignal>
-          <node Class="QuestNode_End">
-            <outcome>Fail</outcome>
-            <sendStandardLetter>true</sendStandardLetter>
-          </node>
-        </li>
-        <li Class="QuestNode_AnySignal">
-          <inSignals>
-            <li>LeaderEliminated</li>
-          </inSignals>
+          <inSignal>$outDeliveredAlive</inSignal>
           <node Class="QuestNode_Sequence">
             <nodes>
-              <li Class="QuestNode_GiveRewards">
-                <parms>
-                  <allowGoodwill>true</allowGoodwill>
-                  <allowRoyalFavor>true</allowRoyalFavor>
-                </parms>
+              <li Class="QuestNode_Greater">
+                <value1>$rewardValueAlive</value1>
+                <value2>0</value2>
+                <node Class="QuestNode_GiveRewards">
+                  <parms>
+                    <rewardValue>$rewardValueAlive</rewardValue>
+                    <allowGoodwill>true</allowGoodwill>
+                    <allowRoyalFavor>true</allowRoyalFavor>
+                  </parms>
+                </node>
+              </li>
+              <li Class="QuestNode_End">
+                <outcome>Success</outcome>
+                <sendStandardLetter>true</sendStandardLetter>
+              </li>
+            </nodes>
+          </node>
+        </li>
+        <li Class="QuestNode_Signal">
+          <inSignal>$outDeliveredDead</inSignal>
+          <node Class="QuestNode_Sequence">
+            <nodes>
+              <li Class="QuestNode_Greater">
+                <value1>$rewardValueDead</value1>
+                <value2>0</value2>
+                <node Class="QuestNode_GiveRewards">
+                  <parms>
+                    <rewardValue>$rewardValueDead</rewardValue>
+                    <allowGoodwill>true</allowGoodwill>
+                  </parms>
+                </node>
               </li>
               <li Class="QuestNode_End">
                 <outcome>Success</outcome>
@@ -506,12 +521,12 @@
     <autoAccept>true</autoAccept>
     <questNameRules>
       <rulesStrings>
-        <li>questName->Debt Enforcement: [enemyFaction_name]</li>
+        <li>questName->Debt Enforcement: [siteFaction_name]</li>
       </rulesStrings>
     </questNameRules>
     <questDescriptionRules>
       <rulesStrings>
-        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, is demanding repayment from &lt;color=#FF3333FF&gt;[enemyFaction_name]&lt;/color&gt;.\n\nThe faction owes a substantial financial debt and has repeatedly refused repayment demands.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants you to travel to their nearby settlement and enforce collection by any means necessary.\n\nSkilled negotiators may resolve the matter peacefully, but forceful asset seizure and destruction are fully authorized if diplomacy fails.</li>
+        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, is demanding repayment from &lt;color=#FF3333FF&gt;[siteFaction_name]&lt;/color&gt;.\n\nThe faction owes a substantial financial debt and has repeatedly refused repayment demands.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants you to travel to their nearby settlement and enforce collection by any means necessary.\n\nSkilled negotiators may resolve the matter peacefully, but forceful asset seizure and destruction are fully authorized if diplomacy fails.</li>
       </rulesStrings>
     </questDescriptionRules>
     <root Class="QuestNode_Sequence">
@@ -530,10 +545,6 @@
         <li Class="BountiesMod.QuestNode_GetEnemyFactionLeader">
           <faction>$faction</faction>
           <storeAs>asker</storeAs>
-        </li>
-        <li Class="QuestNode_GetFaction">
-          <storeAs>enemyFaction</storeAs>
-          <allowEnemy>true</allowEnemy>
         </li>
         <li Class="QuestNode_GetSiteTile">
           <storeAs>siteTile</storeAs>
@@ -669,6 +680,7 @@
         <li Class="BountiesMod.QuestNode_SetupBountyDelivery">
           <targetItem>$item</targetItem>
           <askerFaction>$askerFaction</askerFaction>
+          <site>$site</site>
         </li>
         <li Class="QuestNode_WorldObjectTimeout">
           <worldObject>$site</worldObject>
@@ -753,12 +765,8 @@
           <thing>$asker</thing>
           <storeAs>askerFaction</storeAs>
         </li>
-        <li Class="QuestNode_GetFaction">
-          <storeAs>enemyFaction</storeAs>
-          <allowEnemy>true</allowEnemy>
-        </li>
         <li Class="BountiesMod.QuestNode_GenerateBountyTarget">
-          <faction>$enemyFaction</faction>
+          <faction>$siteFaction</faction>
           <storeAs>target</storeAs>
         </li>
         <li Class="QuestNode_GetSiteTile">
@@ -789,6 +797,7 @@
         <li Class="BountiesMod.QuestNode_SetupBountyContract">
           <target>$target</target>
           <askerFaction>$askerFaction</askerFaction>
+          <site>$site</site>
         </li>
         <li Class="QuestNode_WorldObjectTimeout">
           <worldObject>$site</worldObject>

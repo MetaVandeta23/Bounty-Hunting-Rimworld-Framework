@@ -1,4 +1,5 @@
 using RimWorld;
+using RimWorld.Planet;
 using RimWorld.QuestGen;
 using Verse;
 
@@ -8,6 +9,7 @@ namespace BountiesMod
     {
         public SlateRef<Thing> targetItem;
         public SlateRef<Faction> askerFaction;
+        public SlateRef<MapParent> site;
 
         public override void RunInt()
         {
@@ -15,8 +17,8 @@ namespace BountiesMod
             part.inSignalEnable = QuestGen.slate.Get<string>("inSignal");
             part.askerFaction = askerFaction.GetValue(QuestGen.slate);
             part.targetItemDef = targetItem.GetValue(QuestGen.slate).def;
+            part.targetSite = site.GetValue(QuestGen.slate);
             part.outSignalDeliveredAlive = QuestGen.GenerateNewSignal("ItemDelivered");
-            Log.Message(part.targetItemDef);
             QuestGen.quest.AddPart(part);
             QuestGen.slate.Set("outDelivered", part.outSignalDeliveredAlive);
         }

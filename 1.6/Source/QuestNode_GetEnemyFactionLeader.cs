@@ -12,6 +12,10 @@ namespace BountiesMod
         {
             QuestGen.slate.Set(storeAs.GetValue(QuestGen.slate), faction.GetValue(QuestGen.slate).leader);
         }
-        public override bool TestRunInt(Slate slate) => true;
+        public override bool TestRunInt(Slate slate)
+        {
+            var f = faction.GetValue(slate);
+            return f != null && f.leader != null;
+        }
     }
 }

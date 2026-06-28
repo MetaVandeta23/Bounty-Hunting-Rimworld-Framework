@@ -12,8 +12,7 @@ namespace BountiesMod
             var comp = Current.Game.GetComponent<GameComponent_Bounties>();
             foreach (var faction in Find.FactionManager.AllFactionsListForReading)
             {
-                var modExtension = faction.def.GetModExtension<BountiesModExtension>();
-                if (modExtension != null && modExtension.offersBounties)
+                if (BountyUtilities.OffersBounties(faction))
                 {
                     var collection = new BountyCollection();
                     collection.bounties.AddRange(DefDatabase<BountyDef>.AllDefsListForReading);

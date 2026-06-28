@@ -12,12 +12,7 @@ namespace BountiesMod
         [HarmonyPostfix]
         public static void Postfix(ref DiaNode __result, Pawn negotiator, Faction faction)
         {
-            if (faction.IsPlayer || faction.HostileTo(Faction.OfPlayer))
-                return;
-
-            BountiesModExtension modExtension = faction.def.GetModExtension<BountiesModExtension>();
-
-            if (modExtension == null || !modExtension.offersBounties)
+            if (!BountyUtilities.OffersBounties(faction))
                 return;
 
             DiaOption bountyOption = new DiaOption("META_BrowseBounties".Translate(faction.Name))

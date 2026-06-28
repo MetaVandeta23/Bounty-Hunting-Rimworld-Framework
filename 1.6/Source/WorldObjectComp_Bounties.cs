@@ -17,9 +17,7 @@ namespace BountiesMod
             if (parent.Faction == null)
                 yield break;
 
-            var modExtension = parent.Faction.def.GetModExtension<BountiesModExtension>();
-
-            if (modExtension == null || !modExtension.offersBounties)
+            if (!BountyUtilities.OffersBounties(parent.Faction))
                 yield break;
 
             yield return new Command_Action
@@ -37,10 +35,8 @@ namespace BountiesMod
                 .Where(x => x.State == QuestState.Ongoing)
                 .SelectMany(q => q.PartsListForReading.OfType<QuestPart_BountyDelivery>())
                 .Where(qp => qp.askerFaction == parent.Faction);
-            Log.Message("parts: " + parts.Count());
             foreach (var part in parts)
             {
-                Log.Message("part.targetItemDef: " + part.targetItemDef);
                 if (part.targetItemDef != null && CaravanInventoryUtility.HasThings(caravan, part.targetItemDef, 1))
                 {
                     yield return new Command_Action

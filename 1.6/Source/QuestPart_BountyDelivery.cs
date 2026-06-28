@@ -1,4 +1,5 @@
 using RimWorld;
+using RimWorld.Planet;
 using Verse;
 
 namespace BountiesMod
@@ -8,6 +9,7 @@ namespace BountiesMod
         public Faction askerFaction;
         public ThingDef targetItemDef;
         public Pawn targetPawn;
+        public MapParent targetSite;
         public bool captureAlive;
         public bool deadOrAlive;
         public bool alivePreferred;
@@ -21,6 +23,7 @@ namespace BountiesMod
             Scribe_References.Look(ref askerFaction, "askerFaction");
             Scribe_Defs.Look(ref targetItemDef, "targetItemDef");
             Scribe_References.Look(ref targetPawn, "targetPawn");
+            Scribe_References.Look(ref targetSite, "targetSite");
             Scribe_Values.Look(ref captureAlive, "captureAlive", false);
             Scribe_Values.Look(ref deadOrAlive, "deadOrAlive", false);
             Scribe_Values.Look(ref alivePreferred, "alivePreferred", false);

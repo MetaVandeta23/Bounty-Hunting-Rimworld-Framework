@@ -17,9 +17,11 @@ public abstract class SitePartWorker_BountyAnimalsBase : SitePartWorker
     {
         var sitePartParams = base.GenerateDefaultParams(myThreatPoints, tile, faction);
 
+        IEnumerable<PawnKindDef> candidates;
+
         if (IsExotic)
         {
-            var candidates = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x =>
+            candidates = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x =>
                 x.RaceProps.Animal && !x.RaceProps.neverIncludeInQuests &&
                 x.race.tradeTags != null && x.race.tradeTags.Contains("AnimalExotic"));
 
@@ -28,13 +30,21 @@ public abstract class SitePartWorker_BountyAnimalsBase : SitePartWorker
                 candidates = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x =>
                     x.RaceProps.Animal && !x.RaceProps.neverIncludeInQuests && x.combatPower >= 250f);
             }
-
-            if (!candidates.TryRandomElement(out sitePartParams.animalKind))
-            {
-                ManhunterPackGenStepUtility.TryGetAnimalsKind(sitePartParams.threatPoints, tile, out sitePartParams.animalKind);
-            }
         }
         else
+        {
+            candidates = DefDatabase<PawnKindDef>.AllDefsListForReading.Where(x =>
+                x.RaceProps.Animal && !x.RaceProps.neverIncludeInQuests &&
+                x.combatPower >= 40f && x.canArriveManhunter);
+        }
+
+        var validCandidates = candidates.Where(x => x.combatPower <= sitePartParams.threatPoints).ToList();
+        if (!validCandidates.Any())
+        {
+            validCandidates = candidates.ToList();
+        }
+
+        if (!validCandidates.TryRandomElementByWeight(x => x.combatPower, out sitePartParams.animalKind))
         {
             ManhunterPackGenStepUtility.TryGetAnimalsKind(sitePartParams.threatPoints, tile, out sitePartParams.animalKind);
         }
