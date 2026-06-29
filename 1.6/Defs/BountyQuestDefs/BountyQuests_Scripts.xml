@@ -182,34 +182,13 @@
 
         <li Class="QuestNode_RandomNode">
           <nodes>
-            <li Class="QuestNode_Sequence">
-              <selectionWeight>0.4</selectionWeight>
-              <nodes>
-                <li Class="QuestNode_Set">
-                  <name>sitePartsTags</name>
-                  <value>
-                    <li>
-                      <tag>META_BountyExoticAnimals</tag>
-                    </li>
-                    <li>
-                      <tag>WeatherController</tag>
-                    </li>
-                  </value>
+            <li Class="QuestNode_Set">
+              <name>sitePartsTags</name>
+              <value>
+                <li>
+                  <tag>META_BountyExoticAnimals</tag>
                 </li>
-              </nodes>
-            </li>
-            <li Class="QuestNode_Sequence">
-              <selectionWeight>0.6</selectionWeight>
-              <nodes>
-                <li Class="QuestNode_Set">
-                  <name>sitePartsTags</name>
-                  <value>
-                    <li>
-                      <tag>META_BountyExoticAnimals</tag>
-                    </li>
-                  </value>
-                </li>
-              </nodes>
+              </value>
             </li>
           </nodes>
         </li>
@@ -443,6 +422,10 @@
               <tag>META_BountyLeaderBase</tag>
             </li>
           </sitePartsTags>
+        </li>
+        <li Class="BountiesMod.QuestNode_GenerateBountyTarget">
+          <faction>$siteFaction</faction>
+          <storeAs>target</storeAs>
         </li>
         <li Class="QuestNode_GetDefaultSitePartsParams">
           <tile>$siteTile</tile>
@@ -778,10 +761,6 @@
         <li Class="QuestNode_GetFactionOf">
           <thing>$asker</thing>
           <storeAs>askerFaction</storeAs>
-        </li>
-        <li Class="BountiesMod.QuestNode_GenerateBountyTarget">
-          <faction>$siteFaction</faction>
-          <storeAs>target</storeAs>
         </li>
         <li Class="QuestNode_GetSiteTile">
           <storeAs>siteTile</storeAs>

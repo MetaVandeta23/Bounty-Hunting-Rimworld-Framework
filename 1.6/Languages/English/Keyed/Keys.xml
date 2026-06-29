@@ -20,4 +20,7 @@
 
 	<META_BountyTargetKilledLetter>Quest failed: Bounty Contract</META_BountyTargetKilledLetter>
 	<META_BountyTargetKilledLetterText>{0} is no longer recoverable. The bounty contract has been terminated.</META_BountyTargetKilledLetterText>
+
+	<META_BountyCostMultiplier>Bounty cost multiplier: {0}x</META_BountyCostMultiplier>
+	<META_BountyRefreshRate>Bounty refresh rate (days): {0}</META_BountyRefreshRate>
 </LanguageData>

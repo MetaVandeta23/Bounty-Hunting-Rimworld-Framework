@@ -11,7 +11,8 @@ namespace BountiesMod
     public static class QuestGen_Rewards_GiveRewards_Patch
     {
         public static bool shouldChangeRewards;
-        public static void Postfix(QuestPart_Choice __result)
+
+        public static void Postfix(QuestPart_Choice __result, RewardsGeneratorParams parms, string customLetterLabel, string customLetterText, Verse.Grammar.RulePack customLetterLabelRules, Verse.Grammar.RulePack customLetterTextRules)
         {
             if (shouldChangeRewards is false || __result == null || __result.choices.Count == 0)
                 return;
@@ -25,13 +26,26 @@ namespace BountiesMod
             if (__result.choices.Count >= 3)
             {
                 var idx = __result.choices.FindIndex(c => c.rewards.Any(r => r is Reward_Goodwill || r is Reward_RoyalFavor));
-                __result.choices.RemoveAt(idx >= 0 ? idx : __result.choices.Count - 1);
+                if (idx < 0) idx = __result.choices.Count - 1;
+
+                foreach (var part in __result.choices[idx].questParts)
+                {
+                    QuestGen.quest.RemovePart(part);
+                }
+                __result.choices.RemoveAt(idx);
             }
 
             var silverChoice = new QuestPart_Choice.Choice();
             Reward_Items silverReward = new Reward_Items();
             silverReward.items.Add(silver);
             silverChoice.rewards.Add(silverReward);
+
+            foreach (var part in silverReward.GenerateQuestParts(__result.choices.Count, parms, customLetterLabel, customLetterText, customLetterLabelRules, customLetterTextRules))
+            {
+                QuestGen.quest.AddPart(part);
+                silverChoice.questParts.Add(part);
+            }
+
             __result.choices.Add(silverChoice);
         }
     }

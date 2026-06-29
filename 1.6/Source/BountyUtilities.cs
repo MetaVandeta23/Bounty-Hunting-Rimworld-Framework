@@ -14,7 +14,7 @@ namespace BountiesMod
 
             price -= pawn.skills.GetSkill(SkillDefOf.Social).Level * 20f;
 
-            return price;
+            return price * BountiesModMod.settings.bountyCostMultiplier;
         }
 
         public static bool OffersBounties(Faction faction)

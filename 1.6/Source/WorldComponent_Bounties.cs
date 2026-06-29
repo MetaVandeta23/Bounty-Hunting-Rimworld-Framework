@@ -7,7 +7,6 @@ namespace BountiesMod
     public class GameComponent_Bounties : GameComponent
     {
         public int tickCounter = 0;
-        public int ticksPerBountyRefresh = 3 * 60000;
         public Dictionary<string, BountyCollection> factionBounties = new Dictionary<string, BountyCollection>();
 
         public GameComponent_Bounties(Game game)
@@ -21,6 +20,7 @@ namespace BountiesMod
         public override void GameComponentTick()
         {
             tickCounter++;
+            int ticksPerBountyRefresh = UnityEngine.Mathf.RoundToInt(BountiesModMod.settings.refreshRateDays * 60000f);
             if (tickCounter >= ticksPerBountyRefresh)
             {
                 tickCounter = 0;
