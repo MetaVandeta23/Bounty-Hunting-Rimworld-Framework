@@ -58,6 +58,7 @@ namespace BountiesMod
                             slate.Set("faction_name", faction.Name);
                             slate.Set("asker", faction.leader);
                             slate.Set("points", 100f);
+                            slate.Set("bountyCost", bountyCost * 1.5f);
 
                             Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(bounty.firesQuest, slate);
                             quest.AddPart(involvedFactions);
