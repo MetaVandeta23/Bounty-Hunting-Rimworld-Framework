@@ -125,7 +125,7 @@
                   <allowGoodwill>true</allowGoodwill>
                   <allowRoyalFavor>true</allowRoyalFavor>
                   <thingRewardRequired>true</thingRewardRequired>
-                  <minGeneratedRewardValue>$bountyCost</minGeneratedRewardValue>
+                  <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
                 </parms>
               </li>
               <li Class="QuestNode_End">
@@ -264,7 +264,7 @@
                   <allowGoodwill>true</allowGoodwill>
                   <allowRoyalFavor>true</allowRoyalFavor>
                   <thingRewardRequired>true</thingRewardRequired>
-                  <minGeneratedRewardValue>$bountyCost</minGeneratedRewardValue>
+                  <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
                 </parms>
               </li>
               <li Class="QuestNode_End">
@@ -373,7 +373,7 @@
                   <allowGoodwill>true</allowGoodwill>
                   <allowRoyalFavor>true</allowRoyalFavor>
                   <thingRewardRequired>true</thingRewardRequired>
-                  <minGeneratedRewardValue>$bountyCost</minGeneratedRewardValue>
+                  <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
                 </parms>
               </li>
               <li Class="QuestNode_End">
@@ -486,7 +486,7 @@
                     <allowGoodwill>true</allowGoodwill>
                     <allowRoyalFavor>true</allowRoyalFavor>
                     <thingRewardRequired>true</thingRewardRequired>
-                    <minGeneratedRewardValue>$bountyCost</minGeneratedRewardValue>
+                    <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
                   </parms>
                 </node>
               </li>
@@ -509,7 +509,7 @@
                     <rewardValue>$rewardValueDead</rewardValue>
                     <allowGoodwill>true</allowGoodwill>
                     <thingRewardRequired>true</thingRewardRequired>
-                    <minGeneratedRewardValue>$bountyCost</minGeneratedRewardValue>
+                    <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
                   </parms>
                 </node>
               </li>
@@ -611,7 +611,7 @@
                   <allowGoodwill>true</allowGoodwill>
                   <allowRoyalFavor>true</allowRoyalFavor>
                   <thingRewardRequired>true</thingRewardRequired>
-                  <minGeneratedRewardValue>$bountyCost</minGeneratedRewardValue>
+                  <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
                 </parms>
               </li>
               <li Class="QuestNode_End">
@@ -723,7 +723,7 @@
                   <allowGoodwill>true</allowGoodwill>
                   <allowRoyalFavor>true</allowRoyalFavor>
                   <thingRewardRequired>true</thingRewardRequired>
-                  <minGeneratedRewardValue>$bountyCost</minGeneratedRewardValue>
+                  <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
                 </parms>
               </li>
               <li Class="QuestNode_End">
@@ -837,7 +837,7 @@
                     <allowGoodwill>true</allowGoodwill>
                     <allowRoyalFavor>true</allowRoyalFavor>
                     <thingRewardRequired>true</thingRewardRequired>
-                    <minGeneratedRewardValue>$bountyCost</minGeneratedRewardValue>
+                    <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
                   </parms>
                 </node>
               </li>
@@ -860,7 +860,7 @@
                     <rewardValue>$rewardValueDead</rewardValue>
                     <allowGoodwill>true</allowGoodwill>
                     <thingRewardRequired>true</thingRewardRequired>
-                    <minGeneratedRewardValue>$bountyCost</minGeneratedRewardValue>
+                    <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
                   </parms>
                 </node>
               </li>

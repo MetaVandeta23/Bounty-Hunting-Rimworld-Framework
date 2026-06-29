@@ -49,7 +49,7 @@ namespace BountiesMod
                         else
                         {
                             ConsumeSilver((int)bountyCost);
-
+                            QuestGen_Rewards_GiveRewards_Patch.shouldChangeRewards = true;
                             QuestPart_InvolvedFactions involvedFactions = new QuestPart_InvolvedFactions();
                             involvedFactions.factions.Add(faction);
 
@@ -58,11 +58,12 @@ namespace BountiesMod
                             slate.Set("faction_name", faction.Name);
                             slate.Set("asker", faction.leader);
                             slate.Set("points", 100f);
-                            slate.Set("bountyCost", bountyCost * 1.5f);
+                            slate.Set("bountyReward", bountyCost * 1.5f);
 
                             Quest quest = QuestUtility.GenerateQuestAndMakeAvailable(bounty.firesQuest, slate);
                             quest.AddPart(involvedFactions);
                             QuestUtility.SendLetterQuestAvailable(quest);
+                            QuestGen_Rewards_GiveRewards_Patch.shouldChangeRewards = false;
 
                             comp.factionBounties[faction.def.defName].bounties.Remove(bounty);
                             Close();
@@ -93,8 +94,8 @@ namespace BountiesMod
         }
 
         // a better modder would have merged CanAffordBounty and ConsumeSilver into one bool function that checks whether a colony can afford a bounty but also consumes the bountyCost if they can, so you can do something like 'if (TryConsumeBountyCost(amount)) fire quest'
-		// I am not a better modder
-		
+        // I am not a better modder
+
         // this and the caravan version are just differently wired versions of the same thing. I'd have used a for each loop here myself but the code I copied here from vanilla trading stuff worked pretty cleanly, so
         public virtual void ConsumeSilver(int amount)
         {
