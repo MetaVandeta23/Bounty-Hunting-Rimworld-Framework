@@ -4,7 +4,6 @@
     <defName>META_HuntingMadAnimals</defName>
     <rootSelectionWeight>0</rootSelectionWeight>
     <rootMinPoints>350</rootMinPoints>
-    <autoAccept>true</autoAccept>
     <questNameRules>
       <rulesStrings>
         <li>questName->Hunting: Mad [animalKind_labelPlural]</li>
@@ -143,7 +142,6 @@
     <defName>META_HuntingExoticCulling</defName>
     <rootSelectionWeight>0</rootSelectionWeight>
     <rootMinPoints>350</rootMinPoints>
-    <autoAccept>true</autoAccept>
     <questNameRules>
       <rulesStrings>
         <li>questName->Hunting: Exotic Culling</li>
@@ -261,7 +259,6 @@
     <defName>META_DefeatOutpost</defName>
     <rootSelectionWeight>0</rootSelectionWeight>
     <rootMinPoints>350</rootMinPoints>
-    <autoAccept>true</autoAccept>
     <questNameRules>
       <rulesStrings>
         <li>questName->Defeat the Outpost</li>
@@ -370,7 +367,6 @@
     <defName>META_ContractLeader</defName>
     <rootSelectionWeight>0</rootSelectionWeight>
     <rootMinPoints>350</rootMinPoints>
-    <autoAccept>true</autoAccept>
     <questNameRules>
       <rulesStrings>
         <li>questName->Contract: [leader_nameFull]</li>
@@ -511,7 +507,6 @@
     <defName>META_DebtEnforcement</defName>
     <rootSelectionWeight>0</rootSelectionWeight>
     <rootMinPoints>350</rootMinPoints>
-    <autoAccept>true</autoAccept>
     <questNameRules>
       <rulesStrings>
         <li>questName->Debt Enforcement: [siteFaction_name]</li>
@@ -612,7 +607,6 @@
     <defName>META_Retrieval</defName>
     <rootSelectionWeight>0</rootSelectionWeight>
     <rootMinPoints>350</rootMinPoints>
-    <autoAccept>true</autoAccept>
     <questNameRules>
       <rulesStrings>
         <li>questName->Retrieval: [ItemName]</li>
@@ -724,7 +718,6 @@
     <defName>META_BountyTarget</defName>
     <rootSelectionWeight>0</rootSelectionWeight>
     <rootMinPoints>350</rootMinPoints>
-    <autoAccept>true</autoAccept>
     <questNameRules>
       <rulesStrings>
         <li>questName(CaptureAlive==True)->Bounty: [target_nameDef] the Fugitive</li>
