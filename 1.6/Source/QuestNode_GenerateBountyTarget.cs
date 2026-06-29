@@ -1,5 +1,6 @@
 using RimWorld;
 using RimWorld.QuestGen;
+using System.Linq;
 using Verse;
 
 namespace BountiesMod
@@ -12,7 +13,7 @@ namespace BountiesMod
         public override void RunInt()
         {
             var f = faction.GetValue(QuestGen.slate);
-            var kind = f.RandomPawnKind();
+            var kind = f.def.pawnGroupMakers.SelectMany(gm => gm.options).Where(opt => opt.kind.RaceProps.Humanlike).RandomElementByWeight(opt => opt.selectionWeight).kind;
             var pawn = PawnGenerator.GeneratePawn(new PawnGenerationRequest(kind, f, PawnGenerationContext.NonPlayer, forceGenerateNewPawn: true));
             Find.WorldPawns.PassToWorld(pawn);
             QuestGen.slate.Set(storeAs.GetValue(QuestGen.slate), pawn);
