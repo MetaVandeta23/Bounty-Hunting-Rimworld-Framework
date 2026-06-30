@@ -374,7 +374,10 @@
     </questNameRules>
     <questDescriptionRules>
       <rulesStrings>
-        <li>questDescription(asker_factionLeader==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a high-priority contract against &lt;color=#FF3333FF&gt;[siteFaction_name]&lt;/color&gt;.\n\nIntelligence reports confirm that [leader_nameFull], leader of [siteFaction_name], is currently visiting a nearby settlement to inspect local defenses.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants you to infiltrate the site and either capture or eliminate [leader_nameDef]. The target or their corpse must be returned to any of our settlements to collect the reward.\n\nHeavy resistance is expected.</li>
+        <li>questDescription(asker_factionLeader==True,CaptureAlive==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a high-priority live-capture contract against &lt;color=#FF3333FF&gt;[siteFaction_name]&lt;/color&gt;.\n\nIntelligence reports confirm that [leader_nameFull], leader of [siteFaction_name], is currently visiting a nearby settlement to inspect local defenses.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants you to infiltrate the site and capture [leader_nameDef] alive. Lethal force against defenders is authorized, but the target must survive.\n\nHeavy resistance is expected.</li>
+        <li>questDescription(asker_factionLeader==True,DeadOrAlive==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a high-priority contract against &lt;color=#FF3333FF&gt;[siteFaction_name]&lt;/color&gt;.\n\nIntelligence reports confirm that [leader_nameFull], leader of [siteFaction_name], is currently visiting a nearby settlement to inspect local defenses.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; wants you to infiltrate the site and either capture or eliminate [leader_nameDef]. The target or their corpse must be returned to any of our settlements to collect the reward.\n\nHeavy resistance is expected.</li>
+        <li>questDescription(asker_factionLeader==True,AlivePreferred==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a high-priority contract against &lt;color=#FF3333FF&gt;[siteFaction_name]&lt;/color&gt;.\n\nIntelligence reports confirm that [leader_nameFull], leader of [siteFaction_name], is currently visiting a nearby settlement to inspect local defenses.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; strongly prefers the target captured alive for questioning, but lethal force is authorized if capture becomes impossible.\n\nReturning the corpse instead of a living prisoner will reduce the final reward.\n\nHeavy resistance is expected.</li>
+        <li>questDescription(asker_factionLeader==True,DeadPreferred==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a high-priority termination contract against &lt;color=#FF3333FF&gt;[siteFaction_name]&lt;/color&gt;.\n\nIntelligence reports confirm that [leader_nameFull], leader of [siteFaction_name], is currently visiting a nearby settlement to inspect local defenses.\n\n&lt;color=#D09B61FF&gt;[asker_nameDef]&lt;/color&gt; requires definitive proof of death. You must infiltrate the site, eliminate [leader_nameDef], and return the corpse.\n\nHeavy resistance is expected.</li>
       </rulesStrings>
     </questDescriptionRules>
     <root Class="QuestNode_Sequence">
@@ -439,7 +442,6 @@
           <target>$leader</target>
           <askerFaction>$askerFaction</askerFaction>
           <site>$site</site>
-          <forceContractType>1</forceContractType>
         </li>
         <li Class="QuestNode_WorldObjectTimeout">
           <worldObject>$site</worldObject>
@@ -452,45 +454,20 @@
             <sendStandardLetter>true</sendStandardLetter>
           </node>
         </li>
-        <li Class="QuestNode_Signal">
-          <inSignal>$outDeliveredAlive</inSignal>
+        <li Class="QuestNode_AnySignal">
+          <inSignals>
+            <li>$outDeliveredAlive</li>
+            <li>$outDeliveredDead</li>
+          </inSignals>
           <node Class="QuestNode_Sequence">
             <nodes>
-              <li Class="QuestNode_Greater">
-                <value1>$rewardValueAlive</value1>
-                <value2>0</value2>
-                <node Class="QuestNode_GiveRewards">
-                  <parms>
-                    <rewardValue>$rewardValueAlive</rewardValue>
-                    <allowGoodwill>true</allowGoodwill>
-                    <allowRoyalFavor>true</allowRoyalFavor>
-                    <thingRewardRequired>true</thingRewardRequired>
-                    <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
-                  </parms>
-                </node>
-              </li>
-              <li Class="QuestNode_End">
-                <outcome>Success</outcome>
-                <sendStandardLetter>true</sendStandardLetter>
-              </li>
-            </nodes>
-          </node>
-        </li>
-        <li Class="QuestNode_Signal">
-          <inSignal>$outDeliveredDead</inSignal>
-          <node Class="QuestNode_Sequence">
-            <nodes>
-              <li Class="QuestNode_Greater">
-                <value1>$rewardValueDead</value1>
-                <value2>0</value2>
-                <node Class="QuestNode_GiveRewards">
-                  <parms>
-                    <rewardValue>$rewardValueDead</rewardValue>
-                    <allowGoodwill>true</allowGoodwill>
-                    <thingRewardRequired>true</thingRewardRequired>
-                    <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
-                  </parms>
-                </node>
+              <li Class="QuestNode_GiveRewards">
+                <parms>
+                  <allowGoodwill>true</allowGoodwill>
+                  <allowRoyalFavor>true</allowRoyalFavor>
+                  <thingRewardRequired>true</thingRewardRequired>
+                  <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
+                </parms>
               </li>
               <li Class="QuestNode_End">
                 <outcome>Success</outcome>
@@ -730,7 +707,7 @@
       <rulesStrings>
         <li>questDescription(asker_factionLeader==True,CaptureAlive==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a live-capture warrant for [target_nameFull].\n\nIntelligence reports place [target_nameDef] at a nearby hostile site protected by armed guards.\n\nThe client requires the target returned alive to face interrogation and sentencing. Lethal force against defenders is fully authorized, but if [target_nameDef] dies, the contract will immediately fail.</li>
         <li>questDescription(asker_factionLeader==True,DeadOrAlive==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has placed a bounty on [target_nameFull].\n\n[target_nameDef] has been located at a nearby encampment under armed protection.\n\nThe client authorizes either live capture or lethal termination. Full payment will be provided whether the target is returned breathing or dead.\n\n&lt;color=#D09B61FF&gt;Warning:&lt;/color&gt; If the target is killed, the corpse must remain intact for positive identification.</li>
-        <li>questDescription(asker_factionLeader==True,AlivePreferred==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has authorized a bounty contract for [target_nameFull].\n\n[target_nameDef] is currently hiding at a nearby hostile location guarded by loyal defenders.\n\nThe client strongly prefers the target captured alive for questioning and public sentencing. However, lethal force is authorized if capture becomes impossible.\n\nReturning the corpse instead of a living prisoner will reduce the final reward.</li>
+        <li>questDescription(asker_factionLeader==True,AlivePreferred==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has authorized a bounty contract for [target_nameFull].\n\n[target_nameDef] is currently hiding at a nearby hostile location guarded by loyal defenders.\n\nThe client strongly prefers the target captured alive for questioning and public sentencing. However, lethal force is authorized if capture becomes impossible.</li>
         <li>questDescription(asker_factionLeader==True,DeadPreferred==True)->&lt;color=#D09B61FF&gt;[asker_nameFull]&lt;/color&gt;, of &lt;color=#00BFFFFF&gt;[asker_faction_name]&lt;/color&gt;, has issued a termination contract for [target_nameFull].\n\n[target_nameDef] has become a major threat to regional stability and negotiations are no longer considered viable.\n\nThe target has been tracked to a nearby fortified position. The client requires definitive proof of death and authorizes unrestricted lethal force.</li>
       </rulesStrings>
     </questDescriptionRules>
@@ -796,45 +773,20 @@
             <sendStandardLetter>true</sendStandardLetter>
           </node>
         </li>
-        <li Class="QuestNode_Signal">
-          <inSignal>$outDeliveredAlive</inSignal>
+        <li Class="QuestNode_AnySignal">
+          <inSignals>
+            <li>$outDeliveredAlive</li>
+            <li>$outDeliveredDead</li>
+          </inSignals>
           <node Class="QuestNode_Sequence">
             <nodes>
-              <li Class="QuestNode_Greater">
-                <value1>$rewardValueAlive</value1>
-                <value2>0</value2>
-                <node Class="QuestNode_GiveRewards">
-                  <parms>
-                    <rewardValue>$rewardValueAlive</rewardValue>
-                    <allowGoodwill>true</allowGoodwill>
-                    <allowRoyalFavor>true</allowRoyalFavor>
-                    <thingRewardRequired>true</thingRewardRequired>
-                    <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
-                  </parms>
-                </node>
-              </li>
-              <li Class="QuestNode_End">
-                <outcome>Success</outcome>
-                <sendStandardLetter>true</sendStandardLetter>
-              </li>
-            </nodes>
-          </node>
-        </li>
-        <li Class="QuestNode_Signal">
-          <inSignal>$outDeliveredDead</inSignal>
-          <node Class="QuestNode_Sequence">
-            <nodes>
-              <li Class="QuestNode_Greater">
-                <value1>$rewardValueDead</value1>
-                <value2>0</value2>
-                <node Class="QuestNode_GiveRewards">
-                  <parms>
-                    <rewardValue>$rewardValueDead</rewardValue>
-                    <allowGoodwill>true</allowGoodwill>
-                    <thingRewardRequired>true</thingRewardRequired>
-                    <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
-                  </parms>
-                </node>
+              <li Class="QuestNode_GiveRewards">
+                <parms>
+                  <allowGoodwill>true</allowGoodwill>
+                  <allowRoyalFavor>true</allowRoyalFavor>
+                  <thingRewardRequired>true</thingRewardRequired>
+                  <minGeneratedRewardValue>$bountyReward</minGeneratedRewardValue>
+                </parms>
               </li>
               <li Class="QuestNode_End">
                 <outcome>Success</outcome>

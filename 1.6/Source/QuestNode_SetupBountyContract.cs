@@ -27,20 +27,6 @@ namespace BountiesMod
             slate.Set("AlivePreferred", type == 2);
             slate.Set("DeadPreferred", type == 3);
 
-            var rewardValue = slate.Get("rewardValue", 1000f);
-            var rewardAlive = rewardValue;
-            var rewardDead = rewardValue;
-
-            if (type == 0)
-                rewardDead = 0f;
-            else if (type == 2)
-                rewardDead = rewardValue * 0.55f;
-            else if (type == 3)
-                rewardAlive = 0f;
-
-            slate.Set("rewardValueAlive", rewardAlive);
-            slate.Set("rewardValueDead", rewardDead);
-
             var deliveryPart = new QuestPart_BountyDelivery();
             deliveryPart.inSignalEnable = QuestGen.slate.Get<string>("inSignal");
             deliveryPart.askerFaction = askerFaction.GetValue(slate);
@@ -77,6 +63,16 @@ namespace BountiesMod
                 QuestGen.quest.End(QuestEndOutcome.Fail, 0, null, targetKilledSignal, sendStandardLetter: true);
             }
 
+            if (type == 2)
+            {
+                var halvePart = new QuestPart_HalveReward
+                {
+                    inSignal = outDeliveredDead,
+                    factor = 0.55f
+                };
+                QuestGen.quest.AddPart(halvePart);
+            }
+            
             slate.Set("outDeliveredAlive", outDeliveredAlive);
             slate.Set("outDeliveredDead", outDeliveredDead);
         }
