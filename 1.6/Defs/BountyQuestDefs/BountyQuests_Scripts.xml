@@ -422,10 +422,6 @@
             </li>
           </sitePartsTags>
         </li>
-        <li Class="BountiesMod.QuestNode_GenerateBountyTarget">
-          <faction>$siteFaction</faction>
-          <storeAs>target</storeAs>
-        </li>
         <li Class="QuestNode_GetDefaultSitePartsParams">
           <tile>$siteTile</tile>
           <faction>$siteFaction</faction>
@@ -744,6 +740,10 @@
               <tag>META_BountyPawnCamp</tag>
             </li>
           </sitePartsTags>
+        </li>
+        <li Class="BountiesMod.QuestNode_GenerateBountyTarget">
+          <faction>$siteFaction</faction>
+          <storeAs>target</storeAs>
         </li>
         <li Class="QuestNode_GetDefaultSitePartsParams">
           <tile>$siteTile</tile>
